@@ -11,8 +11,6 @@
         "file-loader": "^6.2.0",
         "html-webpack-plugin": "^5.5.0",
         "mini-css-extract-plugin": "^2.4.5",
-        "react": "^17.0.2",
-        "react-dom": "^17.0.2",
         "remotedev": "^0.2.9",
         "sass": "^1.43.4",
         "sass-loader": "^12.3.0",
@@ -21,5 +19,11 @@
         "webpack": "^5.64.2",
         "webpack-cli": "^4.9.1",
         "webpack-dev-server": "^4.5.0"
+    },
+    "dependencies": {
+        "@material-ui/core": "^4.12.3",
+        "bulma": "^0.9.3",
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2"
     }
 }
