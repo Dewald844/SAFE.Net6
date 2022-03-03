@@ -7,11 +7,18 @@
     <ItemGroup>
         <None Include="index.html" />
         <None Include="paket.references" />
-        <Compile Include="Index.fs" />
+        <Compile Include="Tailwind.Drawer.Fs.fs" />
+        <Compile Include="Home.fs" />
+        <Compile Include="AppStateAndMessage.fs" />
         <Compile Include="App.fs" />
+        <Content Include="tailwind.css" />
+        <Content Include="output.css" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Shared\Shared.fsproj" />
+    </ItemGroup>
+    <ItemGroup>
+      <PackageReference Include="Fable.FontAwesome.Free" Version="2.1.0" />
     </ItemGroup>
     <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

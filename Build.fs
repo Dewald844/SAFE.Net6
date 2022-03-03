@@ -20,7 +20,11 @@ Target.create "Clean" (fun _ ->
     run dotnet "fable clean --yes" clientPath // Delete *.fs.js files created by Fable
 )
 
+let path = "C:\Users\DEWALD~1\TailwindSafeStack\SAFE.Net6"
+
 Target.create "InstallClient" (fun _ -> run npm "install" ".")
+
+Target.create "BuildTailwind" (fun _ -> run npm "build:css" "./")
 
 Target.create "Bundle" (fun _ ->
     [ "server", dotnet $"publish -c Release -o \"{deployPath}\"" serverPath
@@ -71,6 +75,7 @@ let dependencies = [
 
     "Clean"
         ==> "InstallClient"
+     //   ==> "BuildTailwind"
         ==> "Run"
 
     "InstallClient"

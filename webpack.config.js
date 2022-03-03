@@ -22,6 +22,7 @@ var CONFIG = {
     fsharpEntry: './src/Client/output/App.js',
     outputDir: './deploy/public',
     assetsDir: './src/Client/public',
+    cssEntry: './src/Client/public/output.css',
     devServerPort: 8080,
     // When using webpack-dev-server, you may need to redirect some calls
     // to a external API server. See https://webpack.js.org/configuration/dev-server/#devserver-proxy
@@ -116,7 +117,8 @@ module.exports = {
                     {
                         loader: 'sass-loader',
                         options: { implementation: require('sass') }
-                    }
+                    },
+                    'postcss-loader'
                 ],
             },
             {
