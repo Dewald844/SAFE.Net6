@@ -1,57 +1,67 @@
-module Server
+namespace Server
 
-open Fable.Remoting.Server
-open Fable.Remoting.Giraffe
-open Saturn
+module APIInterface =
 
-open Shared
+    open Fable.Remoting.Server
+    open Fable.Remoting.Giraffe
+    open Saturn
+    open Fable.SignalR.SignalRExtension
 
-type Storage() =
-    let todos = ResizeArray<_>()
+    open Shared
 
-    member __.GetTodos() = List.ofSeq todos
+    type Storage() =
+        let todos = ResizeArray<_>()
 
-    member __.AddTodo(todo: Todo) =
-        if Todo.isValid todo.Description then
-            todos.Add todo
-            Ok()
-        else
-            Error "Invalid todo"
+        member __.GetTodos() = List.ofSeq todos
 
-let storage = Storage()
+        member __.AddTodo(todo: Todo) =
+            if Todo.isValid todo.Description then
+                todos.Add todo
+                Ok()
+            else
+                Error "Invalid todo"
 
-storage.AddTodo(Todo.create "Create new SAFE project")
-|> ignore
+    let storage = Storage()
 
-storage.AddTodo(Todo.create "Write your app")
-|> ignore
+    storage.AddTodo(Todo.create "Create new SAFE project")
+    |> ignore
 
-storage.AddTodo(Todo.create "Ship it !!!")
-|> ignore
+    storage.AddTodo(Todo.create "Write your app")
+    |> ignore
 
-let todosApi =
-    { getTodos = fun () -> async { return storage.GetTodos() }
-      addTodo =
-          fun todo ->
-              async {
-                  match storage.AddTodo todo with
-                  | Ok () -> return todo
-                  | Error e -> return failwith e
-              } }
+    storage.AddTodo(Todo.create "Ship it !!!")
+    |> ignore
 
-let webApp =
-    Remoting.createApi ()
-    |> Remoting.withRouteBuilder Route.builder
-    |> Remoting.fromValue todosApi
-    |> Remoting.buildHttpHandler
+    let todosApi =
+        { getTodos = fun () -> async { return storage.GetTodos() }
+          addTodo =
+              fun todo ->
+                  async {
+                      match storage.AddTodo todo with
+                      | Ok () -> return todo
+                      | Error e -> return failwith e
+                  } }
 
-let app =
-    application {
-        url "http://0.0.0.0:8085"
-        use_router webApp
-        memory_cache
-        use_static "public"
-        use_gzip
-    }
 
-run app
+    let webApp =
+        Remoting.createApi ()
+        |> Remoting.withRouteBuilder Route.builder
+        |> Remoting.fromValue todosApi
+        |> Remoting.buildHttpHandler
+
+    let app =
+        application {
+            use_signalr (
+                configure_signalr {
+                    endpoint SignalRApp.EndPoints.Root
+                    send SignalRHub.send
+                    invoke SignalRHub.invoke } )
+            url "http://0.0.0.0:8085"
+            use_json_serializer (Thoth.Json.Giraffe.ThothSerializer())
+            use_router webApp
+            memory_cache
+            use_static "public"
+            use_gzip
+        }
+
+    run app

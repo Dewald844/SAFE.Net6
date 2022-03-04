@@ -20,11 +20,26 @@ module Root =
         | HomeMessage homeMsg , HomeState homeState ->
             let nextState, nextMsg = Home.update homeMsg homeState
             { state with PageState = HomeState <| nextState }, Cmd.map HomeMessage nextMsg
-        | DrawerMessage drawerMsg, DrawerState drawerState ->
-            let nextState, nextMsg = Drawer.update drawerMsg drawerState
-            { state with PageState = DrawerState nextState ; DrawerState = Some nextState},Cmd.map DrawerMessage nextMsg
-        | AlertMessage, AlertState ->
-            state, Cmd.none
+        | DrawerMessage drawerMsg, _ ->
+            match state.DrawerState with
+            | Some ds ->
+                let nextDrawerState, nextDrawerMsg = Drawer.update drawerMsg ds
+                match ds.SelectedPage with
+                | Drawer.SelectPage.Home ->
+                    let nextState, nextMsg = Home.init()
+                    { state with PageState = HomeState nextState ; DrawerState = Some nextDrawerState}
+                    ,Cmd.batch [ Cmd.map HomeMessage nextMsg; Cmd.map DrawerMessage nextDrawerMsg ]
+                | Drawer.SelectPage.SignalR ->
+                    let nextState, nextMsg = SignalR.init
+                    { state with PageState = SignalRState nextState; DrawerState = Some nextDrawerState }
+                    , Cmd.batch [ Cmd.map SignalRMessage nextMsg; Cmd.map DrawerMessage nextDrawerMsg ]
+            | None ->
+                let initialState, initialCmd = Drawer.init()
+                let nextState, nextMsg = Drawer.update drawerMsg initialState
+                { state with DrawerState = Some nextState }, Cmd.map DrawerMessage nextMsg
+        | SignalRMessage signalMsg, SignalRState signalState ->
+            let nextState, nextMsg = SignalR.update signalMsg signalState
+            { state with PageState = SignalRState nextState }, Cmd.map SignalRMessage nextMsg
         | _ -> state, Cmd.none
 
 
@@ -40,7 +55,7 @@ module Root =
                 match pageState.PageState with
                 | PageState.HomeState   state -> yield Home.view   state (HomeMessage   >> dispatch)
                 | PageState.DrawerState state -> yield Drawer.view state (DrawerMessage >> dispatch)
-                | PageState.AlertState        -> yield Html.p [ prop.text "Page Not Available yet" ]
+                | PageState.SignalRState state-> yield SignalR.view state (SignalRMessage >> dispatch)
                 ] ] ]
 
     open Elmish.React

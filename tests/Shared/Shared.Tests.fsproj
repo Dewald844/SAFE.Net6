@@ -8,5 +8,10 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Shared\Shared.fsproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Thoth.Elmish" Version="0.1.1" />
+    <PackageReference Include="Thoth.Json" Version="7.0.0" />
+    <PackageReference Include="Thoth.Json.Giraffe" Version="5.0.0" />
+  </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

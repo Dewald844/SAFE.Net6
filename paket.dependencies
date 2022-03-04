@@ -3,6 +3,9 @@ framework: net6.0
 storage: none
 
 nuget Fable.Remoting.Giraffe
+nuget Fable.SignalR
+nuget Fable.SignalR.AspNetCore
+nuget Fable.SignalR.Saturn
 nuget Feliz.DaisyUI
 nuget Saturn
 nuget Expecto

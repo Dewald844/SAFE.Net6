@@ -9,6 +9,7 @@
         <None Include="paket.references" />
         <Compile Include="Tailwind.Drawer.Fs.fs" />
         <Compile Include="Home.fs" />
+        <Compile Include="Client.SignalR.fs" />
         <Compile Include="AppStateAndMessage.fs" />
         <Compile Include="App.fs" />
         <Content Include="tailwind.css" />
@@ -19,6 +20,9 @@
     </ItemGroup>
     <ItemGroup>
       <PackageReference Include="Fable.FontAwesome.Free" Version="2.1.0" />
+      <PackageReference Include="Fable.SignalR" Version="0.11.5" />
+      <PackageReference Include="Fable.SignalR.Elmish" Version="0.11.5" />
+      <PackageReference Remove="Thoth.Json" />
     </ItemGroup>
     <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

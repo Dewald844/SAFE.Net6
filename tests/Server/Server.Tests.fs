@@ -7,7 +7,7 @@ open Server
 
 let server = testList "Server" [
     testCase "Adding valid Todo" <| fun _ ->
-        let storage = Storage()
+        let storage = APIInterface.Storage()
         let validTodo = Todo.create "TODO"
         let expectedResult = Ok ()
 

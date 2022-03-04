@@ -6,10 +6,18 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="paket.references" />
+    <Compile Include="Server.SignalR.fs" />
     <Compile Include="Server.fs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Shared\Shared.fsproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Fable.SignalR.AspNetCore" Version="0.11.5" />
+    <PackageReference Include="Fable.SignalR.Saturn" Version="0.11.5" />
+    <PackageReference Include="Thoth.Elmish" Version="0.1.1" />
+    <PackageReference Include="Thoth.Json" Version="7.0.0" />
+    <PackageReference Include="Thoth.Json.Giraffe" Version="5.0.0" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

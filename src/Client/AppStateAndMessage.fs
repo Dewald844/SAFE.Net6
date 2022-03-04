@@ -3,13 +3,13 @@ module App =
 
     type PageState =
       | HomeState of Home.Model
-      | AlertState
+      | SignalRState of SignalR.State
       | DrawerState of Drawer.State
 
     type Message =
       | HomeMessage of Home.Message
       | DrawerMessage of Drawer.Message
-      | AlertMessage
+      | SignalRMessage of SignalR.Message
 
     type State = {
         IsLoading : bool
