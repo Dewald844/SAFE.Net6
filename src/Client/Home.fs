@@ -11,13 +11,12 @@ module Home =
     open Fable.Remoting.Client
     open Shared
 
-    type Model = { Todos: Todo list; Input: string; Drawer : bool }
+    type Model = { Todos: Todo list; Input: string }
 
     type Message =
         | GotTodos of Todo list
         | SetInput of string
         | AddTodo
-        | ToggleDrawer
         | AddedTodo of Todo
 
     let todosApi =
@@ -26,10 +25,8 @@ module Home =
         |> Remoting.buildProxy<ITodosApi>
 
     let init () : Model * Cmd<Message> =
-        let model = { Todos = []; Input = ""; Drawer = false }
-
-        let cmd =
-            Cmd.OfAsync.perform todosApi.getTodos () GotTodos
+        let model = { Todos = []; Input = "" }
+        let cmd = Cmd.OfAsync.perform todosApi.getTodos () GotTodos
 
         model, cmd
 
@@ -42,7 +39,6 @@ module Home =
             let cmd = Cmd.OfAsync.perform todosApi.addTodo todo AddedTodo
             { model with Input = "" }, cmd
         | AddedTodo todo -> { model with Todos = model.Todos @ [ todo ] }, Cmd.none
-        | ToggleDrawer -> { model with Drawer = not model.Drawer }, Cmd.none
 
     let daisyContainer (model:Model) (dispatch: Message -> unit)  =
       Daisy.card [
@@ -84,7 +80,8 @@ module Home =
                         Daisy.buttonGroup [
                           Daisy.button.button [
                               prop.className "btn btn-primary"
-                              prop.text "Primary " ]
+                              prop.text "Primary "
+                              prop.onClick ( fun _ -> dispatch AddTodo)]
                           Daisy.button.button [
                               prop.className "btn btn-secondary"
                               prop.text "Secondary" ]

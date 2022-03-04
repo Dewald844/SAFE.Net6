@@ -6,6 +6,7 @@ module APIInterface =
     open Fable.Remoting.Giraffe
     open Saturn
     open Fable.SignalR.SignalRExtension
+    open Microsoft.AspNetCore.Cors.Infrastructure
 
     open Shared
 
@@ -42,12 +43,21 @@ module APIInterface =
                       | Error e -> return failwith e
                   } }
 
-
     let webApp =
         Remoting.createApi ()
         |> Remoting.withRouteBuilder Route.builder
         |> Remoting.fromValue todosApi
         |> Remoting.buildHttpHandler
+
+    let corsConfig (config: CorsPolicyBuilder) =
+        printfn $"Setting CORS config"
+        let originArray = ["http://0.0.0.0:8080"; "http://0.0.0.0:8085"; "http://localhost:8080"] |> List.toArray
+        config.AllowAnyOrigin()
+            .WithOrigins(originArray)
+            .AllowCredentials()
+            .AllowAnyHeader()
+            .Build() |> ignore
+        printfn $"CORS config set"
 
     let app =
         application {
@@ -58,10 +68,12 @@ module APIInterface =
                     invoke SignalRHub.invoke } )
             url "http://0.0.0.0:8085"
             use_json_serializer (Thoth.Json.Giraffe.ThothSerializer())
-            use_router webApp
             memory_cache
             use_static "public"
             use_gzip
+            use_developer_exceptions
+            use_cors "true" corsConfig
+            use_router webApp
         }
 
     run app

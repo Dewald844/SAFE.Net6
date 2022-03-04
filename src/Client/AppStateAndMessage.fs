@@ -16,4 +16,3 @@ module App =
         PageState : PageState
         DrawerState : Option<Drawer.State>
     }
-

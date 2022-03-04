@@ -1,6 +1,7 @@
 namespace Client
 
 open Client.App
+open Thoth.Json
 
 module Root =
 
@@ -12,7 +13,7 @@ module Root =
             IsLoading = false
             PageState = (PageState.HomeState <| (Home.init () |> fst))
             DrawerState = Some (Drawer.init () |> fst )
-        }, Cmd.none
+        }, Cmd.map HomeMessage (Home.init () |> snd)
 
 
     let  update (msg : Message) (state : State) =
@@ -20,6 +21,9 @@ module Root =
         | HomeMessage homeMsg , HomeState homeState ->
             let nextState, nextMsg = Home.update homeMsg homeState
             { state with PageState = HomeState <| nextState }, Cmd.map HomeMessage nextMsg
+        | SignalRMessage signalMsg, SignalRState signalState ->
+            let nextState, nextMsg = SignalR.update signalMsg signalState
+            { state with PageState = SignalRState nextState }, Cmd.map SignalRMessage nextMsg
         | DrawerMessage drawerMsg, _ ->
             match state.DrawerState with
             | Some ds ->
@@ -30,16 +34,13 @@ module Root =
                     { state with PageState = HomeState nextState ; DrawerState = Some nextDrawerState}
                     ,Cmd.batch [ Cmd.map HomeMessage nextMsg; Cmd.map DrawerMessage nextDrawerMsg ]
                 | Drawer.SelectPage.SignalR ->
-                    let nextState, nextMsg = SignalR.init
+                    let nextState, nextMsg = SignalR.init()
                     { state with PageState = SignalRState nextState; DrawerState = Some nextDrawerState }
                     , Cmd.batch [ Cmd.map SignalRMessage nextMsg; Cmd.map DrawerMessage nextDrawerMsg ]
             | None ->
                 let initialState, initialCmd = Drawer.init()
                 let nextState, nextMsg = Drawer.update drawerMsg initialState
                 { state with DrawerState = Some nextState }, Cmd.map DrawerMessage nextMsg
-        | SignalRMessage signalMsg, SignalRState signalState ->
-            let nextState, nextMsg = SignalR.update signalMsg signalState
-            { state with PageState = SignalRState nextState }, Cmd.map SignalRMessage nextMsg
         | _ -> state, Cmd.none
 
 
@@ -53,9 +54,9 @@ module Root =
 
             Html.div [
                 match pageState.PageState with
-                | PageState.HomeState   state -> yield Home.view   state (HomeMessage   >> dispatch)
-                | PageState.DrawerState state -> yield Drawer.view state (DrawerMessage >> dispatch)
-                | PageState.SignalRState state-> yield SignalR.view state (SignalRMessage >> dispatch)
+                | PageState.HomeState    state -> yield Home.view    state (HomeMessage    >> dispatch)
+                | PageState.DrawerState  state -> yield Drawer.view  state (DrawerMessage  >> dispatch)
+                | PageState.SignalRState state -> yield SignalR.view state (SignalRMessage >> dispatch)
                 ] ] ]
 
     open Elmish.React
