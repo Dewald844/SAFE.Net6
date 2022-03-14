@@ -8,6 +8,7 @@
         <None Include="index.html" />
         <None Include="paket.references" />
         <Compile Include="Tailwind.Drawer.Fs.fs" />
+        <Compile Include="Client.AgGrid.fs" />
         <Compile Include="Home.fs" />
         <Compile Include="Client.SignalR.fs" />
         <Compile Include="AppStateAndMessage.fs" />

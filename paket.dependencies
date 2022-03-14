@@ -6,6 +6,7 @@ nuget Fable.Remoting.Giraffe
 nuget Fable.SignalR
 nuget Fable.SignalR.AspNetCore
 nuget Fable.SignalR.Saturn
+nuget Feliz.AgGrid
 nuget Feliz.DaisyUI
 nuget Saturn
 nuget Expecto

@@ -8,7 +8,7 @@ open Fable.FontAwesome
 module Drawer =
 
     type SelectPage =
-        | Home | SignalR
+        | Home | SignalR | AgGrid
 
     type State = {
         DrawerIsOpen : bool
@@ -56,6 +56,10 @@ module Drawer =
                                             Html.a [
                                                 prop.text "SignalR"
                                                 prop.onClick (fun _ -> dispatch (PageSelected SignalR)) ] ]
+                                        Html.li [
+                                            Html.a [
+                                                prop.text "Ag grid"
+                                                prop.onClick (fun _ -> dispatch (PageSelected AgGrid)) ] ]
                                     ] ] ] ] ] ]
                     Html.div [
                         prop.className "navbar-center"

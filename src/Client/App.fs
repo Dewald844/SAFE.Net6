@@ -37,6 +37,10 @@ module Root =
                     let nextState, nextMsg = SignalR.init()
                     { state with PageState = SignalRState nextState; DrawerState = Some nextDrawerState }
                     , Cmd.batch [ Cmd.map SignalRMessage nextMsg; Cmd.map DrawerMessage nextDrawerMsg ]
+                | Drawer.SelectPage.AgGrid ->
+                    let nextState, nextMsg = AgGrid.init()
+                    { state with PageState = AgGridState nextState; DrawerState = Some nextDrawerState }
+                    , Cmd.batch [ Cmd.map AgGridMessage nextMsg; Cmd.map DrawerMessage nextDrawerMsg ]
             | None ->
                 let initialState, initialCmd = Drawer.init()
                 let nextState, nextMsg = Drawer.update drawerMsg initialState
@@ -57,6 +61,7 @@ module Root =
                 | PageState.HomeState    state -> yield Home.view    state (HomeMessage    >> dispatch)
                 | PageState.DrawerState  state -> yield Drawer.view  state (DrawerMessage  >> dispatch)
                 | PageState.SignalRState state -> yield SignalR.view state (SignalRMessage >> dispatch)
+                | PageState.AgGridState  state -> yield AgGrid.view  state (AgGridMessage >> dispatch)
                 ] ] ]
 
     open Elmish.React
