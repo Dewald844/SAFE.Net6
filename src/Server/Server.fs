@@ -41,7 +41,9 @@ module APIInterface =
                       match storage.AddTodo todo with
                       | Ok () -> return todo
                       | Error e -> return failwith e
-                  } }
+                  }
+          read5000RowCsv = ReadCSV.readCsvApi
+          }
 
     let webApp =
         Remoting.createApi ()

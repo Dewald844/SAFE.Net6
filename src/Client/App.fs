@@ -2,6 +2,8 @@ namespace Client
 
 open Client.App
 open Thoth.Json
+open Shared
+open Fable.Remoting.Client
 
 module Root =
 
@@ -15,6 +17,10 @@ module Root =
             DrawerState = Some (Drawer.init () |> fst )
         }, Cmd.map HomeMessage (Home.init () |> snd)
 
+    let todosApi =
+        Remoting.createApi ()
+        |> Remoting.withRouteBuilder Route.builder
+        |> Remoting.buildProxy<ITodosApi>
 
     let  update (msg : Message) (state : State) =
         match msg , state.PageState with
@@ -24,6 +30,9 @@ module Root =
         | SignalRMessage signalMsg, SignalRState signalState ->
             let nextState, nextMsg = SignalR.update signalMsg signalState
             { state with PageState = SignalRState nextState }, Cmd.map SignalRMessage nextMsg
+        | AgGridMessage signalMsg, AgGridState signalState ->
+            let nextState, nextMsg = AgGrid.update signalState signalMsg
+            { state with PageState = AgGridState nextState }, Cmd.map AgGridMessage nextMsg
         | DrawerMessage drawerMsg, _ ->
             match state.DrawerState with
             | Some ds ->
